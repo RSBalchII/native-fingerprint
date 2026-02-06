@@ -4,6 +4,10 @@
   "description": "SimHash fingerprinting for fuzzy text deduplication - native C++ for Node.js",
   "main": "index.js",
   "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RSBalchII/native-fingerprint.git"
+  },
   "keywords": [
     "simhash",
     "fingerprint",

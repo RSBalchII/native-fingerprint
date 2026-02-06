@@ -1,17 +1,17 @@
-# @anchor/native-fingerprint
+# @rbalchii/native-fingerprint
 
 Near-duplicate detection using SimHash
 
 ## Installation
 
 ```bash
-npm install @anchor/native-fingerprint
+npm install @rbalchii/native-fingerprint
 ```
 
 ## Usage
 
 ```javascript
-const { fingerprint, distance, isDuplicate } = require('@anchor/native-fingerprint');
+const { fingerprint, distance, isDuplicate } = require('@rbalchii/native-fingerprint');
 
 // Generate a fingerprint for text
 const fp1 = fingerprint('Hello world');
