@@ -1,0 +1,26 @@
+{
+  "name": "@rbalchii/native-fingerprint",
+  "version": "1.0.0",
+  "description": "SimHash fingerprinting for fuzzy text deduplication - native C++ for Node.js",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "keywords": [
+    "simhash",
+    "fingerprint",
+    "deduplication",
+    "fuzzy",
+    "native",
+    "cpp"
+  ],
+  "author": "Robert Balch II",
+  "license": "Elastic-2.0",
+  "scripts": {
+    "install": "node-gyp rebuild",
+    "build": "node-gyp rebuild",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "node-addon-api": "^7.0.0"
+  },
+  "gypfile": true
+}
