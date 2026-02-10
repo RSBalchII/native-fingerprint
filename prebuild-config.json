@@ -1,0 +1,11 @@
+{
+  "name": "native-fingerprint",
+  "version": "1.0.0",
+  "binary": {
+    "module_name": "fingerprint",
+    "module_path": "./lib/binding/{configuration}/{node_abi}-{platform}-{arch}/",
+    "remote_path": "./{name}/v{version}/{configuration}/",
+    "package_name": "{module_name}-v{version}-{node_abi}-{platform}-{arch}.tar.gz",
+    "host": "https://github.com/RSBalchII/native-fingerprint/releases/download/"
+  }
+}

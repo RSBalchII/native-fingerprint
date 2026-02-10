@@ -1,7 +1,7 @@
 {
   "name": "@rbalchii/native-fingerprint",
   "version": "1.0.0",
-  "description": "SimHash fingerprinting for fuzzy text deduplication - native C++ for Node.js with prebuilt binaries",
+  "description": "SimHash fingerprinting for fuzzy text deduplication - native C++ for Node.js",
   "main": "index.js",
   "types": "index.d.ts",
   "repository": {
@@ -15,8 +15,7 @@
     "fuzzy",
     "native",
     "cpp",
-    "prebuild",
-    "napi"
+    "prebuild"
   ],
   "author": "Robert Balch II",
   "license": "Elastic-2.0",

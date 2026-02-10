@@ -1,0 +1,118 @@
+name: Build and Publish Prebuilds
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-prebuilds:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20]
+        
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          
+      - name: Install dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3-dev
+          
+      - name: Install dependencies (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install python3
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build prebuilds
+        run: npm run prebuild-all
+        
+      - name: Upload prebuild artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prebuilds-${{ matrix.os }}-node${{ matrix.node }}
+          path: ./prebuilds/
+          retention-days: 5
+
+  publish-prebuilds:
+    needs: build-prebuilds
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+          
+      - name: Download all prebuild artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+          
+      - name: Combine prebuilds
+        run: |
+          mkdir -p prebuilds
+          find ./artifacts -name "*.tar.gz" -exec cp {} ./prebuilds/ \;
+          
+      - name: Create release assets
+        run: |
+          # Create a temporary directory for each platform's assets
+          mkdir -p release-assets
+          cp -r prebuilds/* release-assets/
+          
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: prebuilds/*
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  test-prebuilds:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [18, 20]
+        
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          
+      - name: Install dependencies (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3-dev
+          
+      - name: Install from prebuilds
+        run: npm install @rbalchii/native-fingerprint
+        # This tests that the prebuilds work correctly
+        
+      - name: Run tests with prebuilds
+        run: npm test
+        working-directory: node_modules/@rbalchii/native-fingerprint
